@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="h3 text-gray-800 fw-bold">Dashboard Pengikis Google Maps</h1>
+        <p class="text-muted">Pondasi Produksi MVP - Fitur Otomatisasi Infinite Scroll & Ekspor Data Excel</p>
+    </div>
+</div>
+
+<div class="card p-4 mb-4">
+    <form method="POST">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Objek / Kata Kunci Bisnis</label>
+                <input type="text" name="keyword" class="form-control" placeholder="Misal: Masjid, Toko Sembako, Apotek" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Cakupan Provinsi</label>
+                <input type="text" name="provinsi" class="form-control" placeholder="Misal: Jawa Barat, Jawa Timur" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Kota / Kabupaten (Opsional)</label>
+                <input type="text" name="kota" class="form-control" placeholder="Misal: Kota Bekasi, Malang">
+            </div>
+        </div>
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary px-4 fw-semibold">Mulai Proses Scraping</button>
+            {% if has_cache %}
+                <a href="/export" class="btn btn-success px-4 fw-semibold ms-2">⬇️ Unduh File Excel</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+{% if results %}
+<div class="card p-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="m-0 font-weight-bold text-primary fw-bold">Hasil Scraping: <span class="badge bg-secondary">{{ keyword }}</span> di {{ lokasi }}</h5>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th width="8%">No</th>
+                    <th width="52%">Nama Entitas / Tempat</th>
+                    <th width="40%">Aksi Link Peta</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in results %}
+                <tr>
+                    <td class="fw-bold text-muted">{{ loop.index }}</td>
+                    <td class="fw-semibold text-dark">{{ row.Nama }}</td>
+                    <td><a href="{{ row.Link }}" target="_blank" class="btn btn-sm btn-outline-secondary px-3">Buka Google Maps</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
